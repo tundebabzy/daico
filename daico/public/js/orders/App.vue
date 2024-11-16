@@ -1,0 +1,116 @@
+<script setup>
+import { ref, shallowRef, onBeforeMount } from 'vue';
+import { AgGridVue } from "ag-grid-vue3";
+import Link from './renderers/OrderLink.vue';
+import CustomerLink from './renderers/CustomerLink.vue';
+import ItemLink from './renderers/ItemLink.vue';
+
+const rowData = ref([]);
+
+const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', currencySign: "accounting" });
+
+// Column Definitions: Defines the columns to be displayed.
+const colDefs = ref([
+  {
+    field: "po_name", "headerName": "DWM PO", filter: "agTextColumnFilter", cellRenderer: Link,
+    filterParams: {
+      filterOptions: ["equals", "contains", "startsWith", "endsWith"],
+      maxNumConditions: 1,
+    },
+  },
+  {
+    field: "client_po", headerName: "PO", filter: "agTextColumnFilter", filterParams: {
+      filterOptions: ["equals", "contains", "startsWith", "endsWith", "blank", "notBlank"],
+      maxNumConditions: 1,
+    },
+  },
+  {
+    field: "location", filter: "agTextColumnFilter", filterParams: {
+      filterOptions: ["equals", "contains", "startsWith", "endsWith", "blank", "notBlank"],
+      maxNumConditions: 1,
+    }, cellRenderer: CustomerLink
+  },
+  {
+    field: "po_date", headerName: "Date", filter: 'agDateColumnFilter', filterParams: {
+      filterOptions: ["equals", "inRange", "greaterThan", "lessThan"],
+      maxNumConditions: 1,
+    }
+  },
+  { field: "li_number", headerName: "LI #", sortable: false },
+  { field: "part_name", headerName: "Part Name", sortable: false },
+  { field: "part_number", headerName: "Part Number", sortable: false, cellRenderer: ItemLink },
+  { field: "qty_ordered", headerName: "Qty Ordered", sortable: false },
+  { field: "qty_shipped", headerName: "Qty Shipped", sortable: false },
+  { field: "sales_price", headerName: "Sales Price", sortable: false, valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) } },
+  { field: "buy_price", headerName: "Buy Price", valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) } },
+  { field: "notes", editable: true, sortable: false }
+]);
+
+const autoSizeStrategy = {
+  type: "fitGridWidth",
+  defaultMinWidth: 50,
+}
+
+const gridApi = shallowRef();
+
+const rowBuffer = ref(null);
+const rowModelType = ref(null);
+const cacheBlockSize = ref(null);
+const cacheOverflowSize = ref(null);
+const maxConcurrentDatasourceRequests = ref(null);
+const infiniteInitialRowCount = ref(null);
+const maxBlocksInCache = ref(null);
+const paginationPageSize = ref(null);
+
+onBeforeMount(() => {
+  rowBuffer.value = 0;
+  rowModelType.value = "infinite";
+  cacheBlockSize.value = 100;
+  cacheOverflowSize.value = 2;
+  maxConcurrentDatasourceRequests.value = 1;
+  infiniteInitialRowCount.value = 20; //
+  maxBlocksInCache.value = 10;
+  paginationPageSize.value = 20;
+});
+
+const onGridReady = (params) => {
+  gridApi.value = params.api;
+
+  const updateData = () => {
+    const dataSource = {
+      rowCount: null, // behave as infinite scroll while pagination will handle things
+      getRows: (params) => {
+        frappe.call({
+          method: "daico.query.orders.get_orders",
+          args: {
+            start: params.startRow,
+            size: params.endRow - params.startRow,
+            filter_model: params.filterModel,
+            sort_model: params.sortModel
+          }
+        })
+          .then((resp) => {
+            const rowsThisPage = resp.message.result;
+            const lastRow = resp.message.end;
+            params.successCallback(rowsThisPage, lastRow);
+          });
+      },
+    };
+    params.api.setGridOption("datasource", dataSource);
+  };
+
+  updateData();
+};
+
+</script>
+<template>
+  <div style="width: 100%; height: 100%;">
+    <ag-grid-vue :rowData="rowData" :columnDefs="colDefs" style="height: 500px" class="ag-theme-quartz"
+      :autoSizeStrategy="autoSizeStrategy" :pagination="true" @grid-ready="onGridReady" :rowBuffer="rowBuffer"
+      :rowModelType="rowModelType" :cacheBlockSize="cacheBlockSize" :cacheOverflowSize="cacheOverflowSize"
+      :maxConcurrentDatasourceRequests="maxConcurrentDatasourceRequests"
+      :infiniteInitialRowCount="infiniteInitialRowCount" :maxBlocksInCache="maxBlocksInCache"
+      :paginationPageSize="paginationPageSize">
+    </ag-grid-vue>
+  </div>
+</template>

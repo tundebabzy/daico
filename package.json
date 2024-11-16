@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "ag-grid-community": "^32.3.3",
+    "ag-grid-vue3": "^32.3.3"
+  }
+}
