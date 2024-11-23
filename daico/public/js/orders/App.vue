@@ -4,6 +4,7 @@ import { AgGridVue } from "ag-grid-vue3";
 import Link from './renderers/OrderLink.vue';
 import CustomerLink from './renderers/CustomerLink.vue';
 import ItemLink from './renderers/ItemLink.vue';
+import IsInvoiced from './renderers/IsInvoiced.vue';
 
 const rowData = ref([]);
 
@@ -11,6 +12,14 @@ const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', cu
 
 // Column Definitions: Defines the columns to be displayed.
 const colDefs = ref([
+  {
+    field: "is_invoiced", "headerName": "Invoiced", cellRenderer: IsInvoiced,
+    filter: "agTextColumnFilter", filterParams: {
+      filterOptions: ["blank", "notBlank"],
+      maxNumConditions: 1,
+    },
+    sortable: false
+  },
   {
     field: "po_name", "headerName": "DWM PO", filter: "agTextColumnFilter", cellRenderer: Link,
     filterParams: {
@@ -43,6 +52,9 @@ const colDefs = ref([
   { field: "qty_shipped", headerName: "Qty Shipped", sortable: false },
   { field: "sales_price", headerName: "Sales Price", sortable: false, valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) } },
   { field: "buy_price", headerName: "Buy Price", valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) } },
+  { field: "grand_total", "headerName": "Invoice Amount" },
+  { field: "posting_date", "headerName": "Invoice Date" },
+  { field: "sales_invoice", "headerName": "Invoice #" },
   { field: "notes", editable: true, sortable: false }
 ]);
 
