@@ -17,7 +17,6 @@ field_name_map = {
 def get_orders(start=0, size=20, filter_model={}, sort_model={}):
     if isinstance(filter_model, str):
         filter_model = json.loads(filter_model)
-    print(filter_model)
     if isinstance(sort_model, str):
         sort_model = json.loads(sort_model)
 
