@@ -17,6 +17,8 @@ const colDefs = ref([
     filter: "agTextColumnFilter", filterParams: {
       filterOptions: ["blank", "notBlank"],
       maxNumConditions: 1,
+      buttons: ["reset"],
+      closeOnApply: true
     },
     sortable: false
   },
