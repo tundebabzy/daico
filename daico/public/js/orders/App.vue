@@ -5,6 +5,7 @@ import Link from './renderers/OrderLink.vue';
 import CustomerLink from './renderers/CustomerLink.vue';
 import ItemLink from './renderers/ItemLink.vue';
 import IsInvoiced from './renderers/IsInvoiced.vue';
+import SalesInvoiceLink from './renderers/SalesInvoiceLink.vue';
 
 const rowData = ref([]);
 
@@ -56,7 +57,7 @@ const colDefs = ref([
   { field: "buy_price", headerName: "Buy Price", valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) } },
   { field: "grand_total", "headerName": "Invoice Amount" },
   { field: "posting_date", "headerName": "Invoice Date" },
-  { field: "sales_invoice", "headerName": "Invoice #" },
+  { field: "sales_invoice", "headerName": "Invoice #", cellRenderer: SalesInvoiceLink },
   { field: "notes", editable: true, sortable: false }
 ]);
 
