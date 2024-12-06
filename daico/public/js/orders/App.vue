@@ -16,10 +16,8 @@ const colDefs = ref([
   {
     field: "is_invoiced", "headerName": "Invoiced", cellRenderer: IsInvoiced,
     filter: "agTextColumnFilter", filterParams: {
-      filterOptions: ["blank", "notBlank"],
+      filterOptions: ["", "blank", "notBlank"],
       maxNumConditions: 1,
-      buttons: ["reset"],
-      closeOnApply: true
     },
     sortable: false
   },
@@ -117,6 +115,19 @@ const onGridReady = (params) => {
   updateData();
 };
 
+const onFilterChanged = (e) => {
+      console.log("onFilterChanged", e);
+      console.log("gridApi.value.getFilterModel() =>", e.api.getFilterModel());
+    };
+    const onFilterModified = (e) => {
+      console.log("onFilterModified", e);
+      console.log("filterInstance.getModel() =>", e.filterInstance.getModel());
+      console.log(
+        "filterInstance.getModelFromUi() =>",
+        e.filterInstance.getModelFromUi(),
+      );
+    };
+
 </script>
 <template>
   <div style="width: 100%; height: 100%;">
@@ -125,7 +136,9 @@ const onGridReady = (params) => {
       :rowModelType="rowModelType" :cacheBlockSize="cacheBlockSize" :cacheOverflowSize="cacheOverflowSize"
       :maxConcurrentDatasourceRequests="maxConcurrentDatasourceRequests"
       :infiniteInitialRowCount="infiniteInitialRowCount" :maxBlocksInCache="maxBlocksInCache"
-      :paginationPageSize="paginationPageSize">
+      :paginationPageSize="paginationPageSize" @filter-opened="onFilterOpened"
+      @filter-changed="onFilterChanged"
+      @filter-modified="onFilterModified">
     </ag-grid-vue>
   </div>
 </template>
