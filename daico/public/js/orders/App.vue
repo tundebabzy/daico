@@ -6,6 +6,7 @@ import CustomerLink from './renderers/CustomerLink.vue';
 import ItemLink from './renderers/ItemLink.vue';
 import IsInvoiced from './renderers/IsInvoiced.vue';
 import SalesInvoiceLink from './renderers/SalesInvoiceLink.vue';
+import SalesOrderLink from './renderers/SalesOrderLink.vue';
 
 const rowData = ref([]);
 
@@ -32,7 +33,7 @@ const colDefs = ref([
     field: "client_po", headerName: "PO", filter: "agTextColumnFilter", filterParams: {
       filterOptions: ["equals", "contains", "startsWith", "endsWith", "blank", "notBlank"],
       maxNumConditions: 1,
-    },
+    }, cellRenderer: SalesOrderLink
   },
   {
     field: "location", filter: "agTextColumnFilter", filterParams: {
