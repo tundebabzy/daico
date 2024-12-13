@@ -31,7 +31,6 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
         {transform_sort_model(sort_model)}
         limit {cint(size) + 1} offset {cint(start)}""",
         as_dict=1,
-        debug=1,
     )
 
     count = frappe.db.sql(
@@ -65,7 +64,7 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
             "posting_date",
             "grand_total",
         ],
-        filters={"sales_order": ["in", sales_order_names]},
+        filters={"sales_order": ["in", sales_order_names], "docstatus": 1},
     )
 
     for invoice in invoices:
@@ -108,7 +107,7 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
 
 def transform_filter_model(filter_model):
     fields = filter_model.keys() if filter_model else []
-    tokens = _transform_filter(fields, filter_model)
+    tokens = [f'poi.docstatus="1"', f'po.docstatus="1"'] + _transform_filter(fields, filter_model)
     result = " and ".join(tokens)
     if result:
         result = f"where {result}"
