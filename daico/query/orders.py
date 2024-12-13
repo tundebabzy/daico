@@ -26,7 +26,7 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
         poi.item_name as part_name, poi.item_code as part_number, poi.qty as qty_ordered, 
         po.transaction_date as po_date, poi.sales_order_item, poi.sales_order,
         poi.qty as qty_shipped, poi.rate as buy_price, po.name as po_name  from `tabPurchase Order Item` poi
-        join `tabPurchase Order` po on poi.parent = po.name where po.docstatus = "1" and poi.docstatus="1"
+        join `tabPurchase Order` po on poi.parent = po.name
         {transform_filter_model(filter_model)}
         {transform_sort_model(sort_model)}
         limit {cint(size) + 1} offset {cint(start)}""",
@@ -37,7 +37,7 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
     count = frappe.db.sql(
         f"""
         select count(*) as count from `tabPurchase Order Item` poi
-        join `tabPurchase Order` po on poi.parent = po.name where po.docstatus = "1" and poi.docstatus="1"
+        join `tabPurchase Order` po on poi.parent = po.name
         {transform_filter_model(filter_model)}
         {transform_sort_model(sort_model)}""",
         as_dict=1,
@@ -65,7 +65,7 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
             "posting_date",
             "grand_total",
         ],
-        filters={"sales_order": ["in", sales_order_names], "docstatus": 1},
+        filters={"sales_order": ["in", sales_order_names]},
     )
 
     for invoice in invoices:
