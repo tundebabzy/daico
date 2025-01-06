@@ -34,24 +34,24 @@ const colDefs = ref([
     width: 110
   },
   {
-    field: "client_po", headerName: "PO", filter: "agTextColumnFilter", 
+    field: "client_po", headerName: "PO", filter: "agTextColumnFilter",
     filterParams: {
       filterOptions: ["equals", "contains", "startsWith", "endsWith", "blank", "notBlank"],
       maxNumConditions: 1,
-    }, 
+    },
     cellRenderer: SalesOrderLink,
     width: 110
   },
   {
-    field: "location", filter: "agTextColumnFilter", 
+    field: "location", filter: "agTextColumnFilter",
     filterParams: {
       filterOptions: ["equals", "contains", "startsWith", "endsWith", "blank", "notBlank"],
       maxNumConditions: 1,
-    }, 
+    },
     cellRenderer: CustomerLink
   },
   {
-    field: "po_date", headerName: "Date", filter: 'agDateColumnFilter', 
+    field: "po_date", headerName: "Date", filter: 'agDateColumnFilter',
     filterParams: {
       filterOptions: ["equals", "inRange", "greaterThan", "lessThan"],
       maxNumConditions: 1,
@@ -60,26 +60,26 @@ const colDefs = ref([
   },
   { field: "li_number", headerName: "LI #", sortable: false, width: 60 },
   { field: "part_name", headerName: "Part Name", sortable: false },
-  { 
-    field: "part_number", headerName: "Part Number", 
-    sortable: false, 
+  {
+    field: "part_number", headerName: "Part Number",
+    sortable: false,
     cellRenderer: ItemLink,
     width: 160
   },
   { field: "qty_ordered", headerName: "Qty Ordered", sortable: false, width: 100 },
   { field: "qty_shipped", headerName: "Qty Shipped", sortable: false, width: 100 },
-  { 
-    field: "sales_price", headerName: "Sales Price", 
-    sortable: false, 
-    valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
-    width: 100
-   },
-  { 
-    field: "buy_price", headerName: "Buy Price", 
+  {
+    field: "sales_price", headerName: "Sales Price",
+    sortable: false,
     valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
     width: 100
   },
-  { 
+  {
+    field: "buy_price", headerName: "Buy Price",
+    valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
+    width: 100
+  },
+  {
     field: "grand_total", headerName: "Invoice Amount",
     width: 120,
     valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
@@ -88,6 +88,10 @@ const colDefs = ref([
   { field: "sales_invoice", "headerName": "Invoice #", cellRenderer: SalesInvoiceLink, width: 120 },
   { field: "notes", editable: true, sortable: false }
 ]);
+
+const defaultColDef = ref({
+  wrapHeaderText: true,
+});
 
 const autoSizeStrategy = {
   defaultMinWidth: 10,
@@ -145,17 +149,17 @@ const onGridReady = (params) => {
 };
 
 const onFilterChanged = (e) => {
-      console.log("onFilterChanged", e);
-      console.log("gridApi.value.getFilterModel() =>", e.api.getFilterModel());
-    };
-    const onFilterModified = (e) => {
-      console.log("onFilterModified", e);
-      console.log("filterInstance.getModel() =>", e.filterInstance.getModel());
-      console.log(
-        "filterInstance.getModelFromUi() =>",
-        e.filterInstance.getModelFromUi(),
-      );
-    };
+  console.log("onFilterChanged", e);
+  console.log("gridApi.value.getFilterModel() =>", e.api.getFilterModel());
+};
+const onFilterModified = (e) => {
+  console.log("onFilterModified", e);
+  console.log("filterInstance.getModel() =>", e.filterInstance.getModel());
+  console.log(
+    "filterInstance.getModelFromUi() =>",
+    e.filterInstance.getModelFromUi(),
+  );
+};
 
 </script>
 <template>
@@ -165,9 +169,8 @@ const onFilterChanged = (e) => {
       :rowModelType="rowModelType" :cacheBlockSize="cacheBlockSize" :cacheOverflowSize="cacheOverflowSize"
       :maxConcurrentDatasourceRequests="maxConcurrentDatasourceRequests"
       :infiniteInitialRowCount="infiniteInitialRowCount" :maxBlocksInCache="maxBlocksInCache"
-      :paginationPageSize="paginationPageSize" @filter-opened="onFilterOpened"
-      @filter-changed="onFilterChanged"
-      @filter-modified="onFilterModified">
+      :paginationPageSize="paginationPageSize" @filter-opened="onFilterOpened" @filter-changed="onFilterChanged"
+      @filter-modified="onFilterModified" :defaultColDef="defaultColDef">
     </ag-grid-vue>
   </div>
 </template>
