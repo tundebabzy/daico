@@ -20,7 +20,9 @@ const colDefs = ref([
       filterOptions: ["", "blank", "notBlank"],
       maxNumConditions: 1,
     },
-    sortable: false
+    sortable: false,
+    pinned: "left",
+    width: 15
   },
   {
     field: "po_name", "headerName": "DWM PO", filter: "agTextColumnFilter", cellRenderer: Link,
@@ -28,41 +30,67 @@ const colDefs = ref([
       filterOptions: ["equals", "contains", "startsWith", "endsWith"],
       maxNumConditions: 1,
     },
+    pinned: "left",
+    width: 110
   },
   {
-    field: "client_po", headerName: "PO", filter: "agTextColumnFilter", filterParams: {
+    field: "client_po", headerName: "PO", filter: "agTextColumnFilter", 
+    filterParams: {
       filterOptions: ["equals", "contains", "startsWith", "endsWith", "blank", "notBlank"],
       maxNumConditions: 1,
-    }, cellRenderer: SalesOrderLink
+    }, 
+    cellRenderer: SalesOrderLink,
+    width: 110
   },
   {
-    field: "location", filter: "agTextColumnFilter", filterParams: {
+    field: "location", filter: "agTextColumnFilter", 
+    filterParams: {
       filterOptions: ["equals", "contains", "startsWith", "endsWith", "blank", "notBlank"],
       maxNumConditions: 1,
-    }, cellRenderer: CustomerLink
+    }, 
+    cellRenderer: CustomerLink
   },
   {
-    field: "po_date", headerName: "Date", filter: 'agDateColumnFilter', filterParams: {
+    field: "po_date", headerName: "Date", filter: 'agDateColumnFilter', 
+    filterParams: {
       filterOptions: ["equals", "inRange", "greaterThan", "lessThan"],
       maxNumConditions: 1,
-    }
+    },
+    width: 120
   },
-  { field: "li_number", headerName: "LI #", sortable: false },
+  { field: "li_number", headerName: "LI #", sortable: false, width: 60 },
   { field: "part_name", headerName: "Part Name", sortable: false },
-  { field: "part_number", headerName: "Part Number", sortable: false, cellRenderer: ItemLink },
-  { field: "qty_ordered", headerName: "Qty Ordered", sortable: false },
-  { field: "qty_shipped", headerName: "Qty Shipped", sortable: false },
-  { field: "sales_price", headerName: "Sales Price", sortable: false, valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) } },
-  { field: "buy_price", headerName: "Buy Price", valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) } },
-  { field: "grand_total", "headerName": "Invoice Amount" },
-  { field: "posting_date", "headerName": "Invoice Date" },
-  { field: "sales_invoice", "headerName": "Invoice #", cellRenderer: SalesInvoiceLink },
+  { 
+    field: "part_number", headerName: "Part Number", 
+    sortable: false, 
+    cellRenderer: ItemLink,
+    width: 160
+  },
+  { field: "qty_ordered", headerName: "Qty Ordered", sortable: false, width: 100 },
+  { field: "qty_shipped", headerName: "Qty Shipped", sortable: false, width: 100 },
+  { 
+    field: "sales_price", headerName: "Sales Price", 
+    sortable: false, 
+    valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
+    width: 100
+   },
+  { 
+    field: "buy_price", headerName: "Buy Price", 
+    valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
+    width: 100
+  },
+  { 
+    field: "grand_total", headerName: "Invoice Amount",
+    width: 120,
+    valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
+  },
+  { field: "posting_date", "headerName": "Invoice Date", width: 120 },
+  { field: "sales_invoice", "headerName": "Invoice #", cellRenderer: SalesInvoiceLink, width: 120 },
   { field: "notes", editable: true, sortable: false }
 ]);
 
 const autoSizeStrategy = {
-  type: "fitGridWidth",
-  defaultMinWidth: 50,
+  defaultMinWidth: 10,
 }
 
 const gridApi = shallowRef();
