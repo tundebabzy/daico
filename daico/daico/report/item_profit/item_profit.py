@@ -51,7 +51,7 @@ def get_columns(filters):
         _("Last Purchase Rate") + ":Currency:90",
         _("Sales Price List") + "::180",
         _("Purchase Price List") + "::180",
-        _("Profit") + "::150",
+        _("Profit") + ":Percent:150",
         _("Manufacturer"),
         _("Supplier") + "::150"
     ]
@@ -150,7 +150,7 @@ def get_price_list():
             fillvalue=0,
         )
         rate[key]["Rate"] = [
-            f"{round((sell - buy)/buy * 100, 2) if (buy != 0 and sell != 0) else 0}%"
+            round((sell - buy)/buy * 100, 2) if (buy != 0 and sell != 0) else 0
             for sell, buy in _rates
         ]
         if rate[key].get("SellingRate"):
@@ -163,7 +163,7 @@ def get_price_list():
     for item in rate:
         for buying_or_selling in rate[item]:
             item_rate_map.setdefault(item, {}).setdefault(
-                buying_or_selling, ", ".join(rate[item].get(buying_or_selling, []))
+                buying_or_selling, rate[item].get(buying_or_selling, [0])[0]
             )
             item_rate_map.setdefault(item, {}).setdefault("rate")
 
