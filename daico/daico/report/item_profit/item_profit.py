@@ -51,7 +51,7 @@ def get_columns(filters):
         _("Last Purchase Rate") + ":Currency:90",
         _("Sales Price List") + "::180",
         _("Purchase Price List") + "::180",
-        _("Profit") + ":Percent:150",
+        _("Profit(%)") + ":Float:150",
         _("Manufacturer"),
         _("Supplier") + "::150"
     ]
