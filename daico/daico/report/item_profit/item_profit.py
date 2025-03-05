@@ -124,7 +124,7 @@ def get_price_list():
     for d in price_list:
         d.update(
             {
-                "price": f"{d.currency} {round(d.price_list_rate, 2)} - {d.price_list}",
+                "price": round(d.price_list_rate, 2),
                 "rate": d.price_list_rate,
             }
         )
