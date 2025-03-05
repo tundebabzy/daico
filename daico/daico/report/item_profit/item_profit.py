@@ -49,8 +49,8 @@ def get_columns(filters):
         _("Item Name") + "::150",
         _("Description") + "::150",
         _("Last Purchase Rate") + ":Currency:90",
-        _("Sales Price List") + "::180",
-        _("Purchase Price List") + "::180",
+        _("Sales Price List") + ":Currency:180",
+        _("Purchase Price List") + ":Currency:180",
         _("Profit(%)") + ":Float:150",
         _("Manufacturer"),
         _("Supplier") + "::150"
@@ -125,7 +125,7 @@ def get_price_list():
         d.update(
             {
                 "price": round(d.price_list_rate, 2),
-                "rate": d.price_list_rate,
+                "rate": round(d.price_list_rate, 2),
             }
         )
 
