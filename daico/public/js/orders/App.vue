@@ -84,7 +84,7 @@ const colDefs = ref([
     width: 120,
     valueFormatter: p => { if (p.value) return currencyFormatter.format(p.value || 0) },
   },
-  { field: "posting_date", "headerName": "Invoice Date", width: 120 },
+  { field: "posting_date", "headerName": "Invoice Date", width: 120, sortable: false },
   { field: "sales_invoice", "headerName": "Invoice #", cellRenderer: SalesInvoiceLink, width: 120 },
   { field: "notes", editable: true, sortable: false }
 ]);
