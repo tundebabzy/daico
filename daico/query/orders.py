@@ -10,6 +10,7 @@ field_name_map = {
     "li_number": "poi.idx",
     "buy_price": "poi.rate",
     "is_invoiced": "poi.sales_order",
+    "sales_invoice": "poi.sales_order",
 }
 
 
@@ -43,6 +44,11 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
     )
 
     sales_items = [doc.sales_order_item for doc in orders]
+    sales_order_sort_model = None
+    for model in sort_model:
+        if model.get("colId") == "sales_invoice":
+            sales_order_sort_model = model
+
     sales_data = frappe.get_all(
         "Sales Order Item",
         fields=["rate", "name", "parent"],
@@ -102,12 +108,18 @@ def get_orders(start=0, size=20, filter_model={}, sort_model={}):
         elif filter_model["is_invoiced"].get("type") == "blank":
             orders = [order for order in orders if not order.get("is_invoiced")]
 
+    # sort in code if sorted by sales invoice
+    if sales_order_sort_model:
+        orders.sort(key=lambda i: cint(i.sales_invoice), reverse=sales_order_sort_model["sort"] == "desc")
+
     return {"result": orders[: cint(size)], "end": count[0].count if count else None}
 
 
 def transform_filter_model(filter_model):
     fields = filter_model.keys() if filter_model else []
-    tokens = [f'poi.docstatus="1"', f'po.docstatus="1"'] + _transform_filter(fields, filter_model)
+    tokens = [f'poi.docstatus="1"', f'po.docstatus="1"'] + _transform_filter(
+        fields, filter_model
+    )
     result = " and ".join(tokens)
     if result:
         result = f"where {result}"
