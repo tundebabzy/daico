@@ -5,11 +5,6 @@ import frappe
 from frappe import _
 
 def execute(filters=None):
-    """
-    Main function to execute the report.
-    Fetches Sales Invoice data, calculates profit for each item,
-    and includes shipping and other charges.
-    """
     if not filters:
         filters = {}
 
@@ -127,7 +122,7 @@ def get_data(filters):
                     "posting_date": invoice_doc.posting_date,
                     "item_code": item.item_name,
                     "quantity": item.qty,
-                    "shipping_fee": item.rate, # Value goes into the Shipping Fee column
+                    "shipping_fee": item.rate,
                 })
             # Handle tariff charge item
             elif item.item_code == "tariffdelivery":
@@ -136,11 +131,12 @@ def get_data(filters):
                     "posting_date": invoice_doc.posting_date,
                     "item_code": item.item_name,
                     "quantity": item.qty,
-                    "tariff": item.rate, # Value goes into the Tariff column
+                    "tariff": item.rate,
                 })
             # Handle regular product items
             else:
-                purchase_price = get_valuation_rate(item.name)
+                purchase_price = frappe.db.get_value("Item", item.item_code, "last_purchase_rate") or 0
+                
                 profit_per_item = item.rate - purchase_price
                 profit_for_line = profit_per_item * item.qty
                 invoice_total_profit += profit_for_line
@@ -164,11 +160,3 @@ def get_data(filters):
         })
 
     return data
-
-def get_valuation_rate(sales_invoice_item_name):
-    valuation_rate = frappe.db.get_value(
-        "Stock Ledger Entry",
-        {"voucher_type": "Sales Invoice", "voucher_detail_no": sales_invoice_item_name},
-        "valuation_rate"
-    )
-    return valuation_rate or 0
